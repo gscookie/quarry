@@ -64,6 +64,7 @@ def rock_add(
     spawned_by: str | None = None,
     horizon: str = "month",
     carried_by: OptStrList = None,
+    witnesses: OptStrList = None,
     provenance: str | None = None,
 ) -> dict:
     """
@@ -73,10 +74,16 @@ def rock_add(
     body: fuller description of what's being carried and why.
     tags: optional labels.
     parent_id: ID of parent rock (for structural grouping).
-    spawned_by: ID of rock whose resolution opened this one (genealogical lineage).
-    horizon: "session", "week", "month" (default), or "long".
-    carried_by: list of agent names carrying this rock (e.g. ["epektasis", "wren"]).
-    provenance: brief note on where this rock came from.
+    spawned_by: ID of the rock whose resolution generated this one (genealogical chain —
+                tracks lineage of inquiry, not source context).
+    horizon: natural timescale for resolution — "session" (today), "week" (this week),
+             "month" (next few exchanges, default), or "long" (years-horizon inquiry).
+             This is when the question wants to be addressed, not how long it lives.
+    carried_by: agents actively holding this rock — responsible for tracking and moving it.
+    witnesses: agents present to this rock but not carrying it — they know it exists and
+               can speak to it, but aren't tasked with it (e.g. a human in witness position).
+    provenance: free-text description of source context — paper, session, exchange, etc.
+                Distinct from spawned_by, which tracks rock-to-rock genealogy.
 
     Returns the created rock.
     """
@@ -89,6 +96,7 @@ def rock_add(
             spawned_by=spawned_by,
             horizon=horizon,
             carried_by=carried_by or [],
+            witnesses=witnesses or [],
             provenance=provenance,
         )
     except ValueError as e:
@@ -160,12 +168,13 @@ def rock_update(
     parent_id: str | None = None,
     horizon: str | None = None,
     carried_by: OptStrList = None,
+    witnesses: OptStrList = None,
     provenance: str | None = None,
 ) -> dict | None:
     """
     Update a rock's fields. Only provided fields are changed.
 
-    status must be one of: active, resolved, suspended.
+    status must be one of: active, resolved, suspended, dormant.
     horizon must be one of: session, week, month, long.
     To resolve with a resolution note and optionally spawn new rocks, prefer rock_resolve.
 
@@ -181,6 +190,7 @@ def rock_update(
             parent_id=parent_id,
             horizon=horizon,
             carried_by=carried_by,
+            witnesses=witnesses,
             provenance=provenance,
         )
     except ValueError as e:

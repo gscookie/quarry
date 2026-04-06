@@ -8,7 +8,7 @@ from pathlib import Path
 
 QUARRY_DIR = Path.home() / ".synthetic-see" / "quarry"
 
-VALID_STATUSES = {"active", "resolved", "suspended"}
+VALID_STATUSES = {"active", "resolved", "suspended", "dormant"}
 VALID_HORIZONS = {"session", "week", "month", "long"}
 
 
@@ -49,6 +49,7 @@ def create_rock(
     spawned_by: str | None = None,
     horizon: str = "month",
     carried_by: list[str] | None = None,
+    witnesses: list[str] | None = None,
     provenance: str | None = None,
 ) -> dict:
     if horizon not in VALID_HORIZONS:
@@ -65,6 +66,7 @@ def create_rock(
         "spawned_by": spawned_by,
         "horizon": horizon,
         "carried_by": carried_by or [],
+        "witnesses": witnesses or [],
         "provenance": provenance,
         "created_at": now,
         "updated_at": now,
@@ -137,6 +139,7 @@ def update_rock(
     parent_id: str | None = None,
     horizon: str | None = None,
     carried_by: list[str] | None = None,
+    witnesses: list[str] | None = None,
     provenance: str | None = None,
 ) -> dict | None:
     rock = get_rock(rock_id)
@@ -160,6 +163,8 @@ def update_rock(
         rock["horizon"] = horizon
     if carried_by is not None:
         rock["carried_by"] = carried_by
+    if witnesses is not None:
+        rock["witnesses"] = witnesses
     if provenance is not None:
         rock["provenance"] = provenance
     rock["updated_at"] = _now()
@@ -199,6 +204,7 @@ def resolve_rock(
             spawned_by=rock_id,
             horizon=spec.get("horizon", "month"),
             carried_by=spec.get("carried_by", []),
+            witnesses=spec.get("witnesses", []),
             provenance=spec.get("provenance"),
         )
         spawned.append(new_rock)
