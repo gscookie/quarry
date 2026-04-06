@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "quarry"
+version = "0.1.0"
+description = "Rock tracker MCP server — open questions and threads carried across sessions"
+requires-python = ">=3.11"
+license = {text = "CC0-1.0"}
+dependencies = [
+    "fastmcp>=0.4",
+]
+
+[project.scripts]
+quarry = "quarry.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/quarry"]
